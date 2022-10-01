@@ -1,18 +1,49 @@
 package ru.practicum.shareit.user;
 
+import lombok.RequiredArgsConstructor;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+import ru.practicum.shareit.exception.WrongParameterException;
+import ru.practicum.shareit.user.dao.UserDao;
 import ru.practicum.shareit.user.dto.UserDto;
+import ru.practicum.shareit.user.model.User;
 
 import java.util.List;
 
-public interface UserService {
+@Service
+@Transactional(readOnly = true)
+@RequiredArgsConstructor
+public class UserService {
 
-    UserDto create(UserDto userDto);
+    private final UserDao dao;
 
-    UserDto update(Long userId, UserDto userDto);
+    @Transactional
+    public UserDto create(UserDto userDto) {
+        User user = UserMapper.toUser(userDto);
+        dao.save(user);
+        return UserMapper.toUserDto(user);
+    }
 
-    UserDto getUser(Long userId);
+    @Transactional
+    public UserDto update(Long userId, UserDto userDto) {
+        User user = UserMapper.toUser(getUser(userId));
+        if (userDto.getName() != null) user.setName(userDto.getName());
+        if (userDto.getEmail() != null) user.setEmail(userDto.getEmail());
+        dao.save(user);
+        return UserMapper.toUserDto(user);
+    }
 
-    List<UserDto> getAll();
+    public UserDto getUser(Long userId) {
+        User user = dao.findById(userId).orElseThrow(() -> new WrongParameterException("User не найден"));
+        return UserMapper.toUserDto(user);
+    }
 
-    void delete(Long userId);
+    public List<UserDto> getAll() {
+        return UserMapper.toUserDtoList(dao.findAll());
+    }
+
+    @Transactional
+    public void delete(Long userId) {
+        dao.deleteById(userId);
+    }
 }
