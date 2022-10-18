@@ -7,8 +7,6 @@ import org.springframework.web.bind.annotation.*;
 import ru.practicum.shareit.request.dto.ItemRequestDto;
 import ru.practicum.shareit.request.model.ItemRequestDtoWithItems;
 
-import javax.validation.constraints.Positive;
-import javax.validation.constraints.PositiveOrZero;
 import java.util.List;
 
 @Slf4j
@@ -45,8 +43,8 @@ public class ItemRequestController {
 
     @GetMapping(value = "/all")
     public List<ItemRequestDtoWithItems> getItemRequests(@RequestHeader("X-Sharer-User-Id") Long userId,
-                                                         @PositiveOrZero @RequestParam(defaultValue = "0") int from,
-                                                         @Positive @RequestParam(defaultValue = "10") int size) {
+                                                         @RequestParam(defaultValue = "0") int from,
+                                                         @RequestParam(defaultValue = "10") int size) {
         List<ItemRequestDtoWithItems> dtos = requestService.getAllItemRequests(userId, from, size);
         log.info("Получен список запросов созданных другими пользователями");
         return dtos;

@@ -7,8 +7,6 @@ import org.springframework.web.bind.annotation.*;
 import ru.practicum.shareit.booking.dto.BookingDto;
 import ru.practicum.shareit.booking.dto.FullBookingDto;
 
-import javax.validation.constraints.Positive;
-import javax.validation.constraints.PositiveOrZero;
 import java.util.List;
 
 @Slf4j
@@ -49,8 +47,8 @@ public class BookingController {
     public List<FullBookingDto> bookingsByBooker(
             @RequestHeader("X-Sharer-User-Id") Long userId,
             @RequestParam(defaultValue = "ALL") String state,
-            @PositiveOrZero @RequestParam(defaultValue = "0") int from,
-            @Positive @RequestParam(defaultValue = "10") int size) {
+            @RequestParam(defaultValue = "0") int from,
+            @RequestParam(defaultValue = "10") int size) {
 
         List<FullBookingDto> bookings = bookingService.bookingsByBooker(userId, state, from, size);
         log.info("Получен список всех бронирований текущего пользователя");
@@ -61,8 +59,8 @@ public class BookingController {
     public List<FullBookingDto> bookingsByOwner(
             @RequestHeader("X-Sharer-User-Id") Long userId,
             @RequestParam(defaultValue = "ALL", required = false) String state,
-            @PositiveOrZero @RequestParam(defaultValue = "0") int from,
-            @Positive @RequestParam(defaultValue = "10") int size) {
+            @RequestParam(defaultValue = "0") int from,
+            @RequestParam(defaultValue = "10") int size) {
         List<FullBookingDto> bookings = bookingService.bookingsByOwner(userId, state, from, size);
         log.info("Получен список всех забронированных вещей текущего пользователя");
         return bookings;

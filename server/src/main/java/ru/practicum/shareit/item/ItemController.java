@@ -8,10 +8,7 @@ import ru.practicum.shareit.comment.CommentService;
 import ru.practicum.shareit.comment.dto.CommentDto;
 import ru.practicum.shareit.item.dto.ItemDto;
 import ru.practicum.shareit.item.dto.ItemInfoDto;
-import ru.practicum.shareit.utility.Create;
 
-import javax.validation.constraints.Positive;
-import javax.validation.constraints.PositiveOrZero;
 import java.util.List;
 
 @Slf4j
@@ -26,7 +23,6 @@ public class ItemController {
 
     @PostMapping
     public ItemDto create(@RequestHeader("X-Sharer-User-Id") Long userId,
-                          @Validated({Create.class})
                           @RequestBody ItemDto itemDto) {
         ItemDto item = itemService.create(userId, itemDto);
         log.info("{} created", item.getName());
@@ -52,8 +48,8 @@ public class ItemController {
 
     @GetMapping
     List<ItemInfoDto> getUserItems(@RequestHeader("X-Sharer-User-Id") Long userId,
-                                   @PositiveOrZero @RequestParam(defaultValue = "0") int from,
-                                   @Positive @RequestParam(defaultValue = "10") int size) {
+                                   @RequestParam(defaultValue = "0") int from,
+                                   @RequestParam(defaultValue = "10") int size) {
         List<ItemInfoDto> items = itemService.getUserItems(userId, from, size);
         log.info("Были получены все объявления пользователя с id {}", userId);
         return items;
@@ -61,8 +57,8 @@ public class ItemController {
 
     @GetMapping(value = "/search")
     List<ItemDto> search(@RequestParam String text,
-                         @PositiveOrZero @RequestParam(defaultValue = "0") int from,
-                         @Positive @RequestParam(defaultValue = "10") int size) {
+                         @RequestParam(defaultValue = "0") int from,
+                         @RequestParam(defaultValue = "10") int size) {
         List<ItemDto> items = itemService.search(text, from, size);
         log.info("Были найдены обьявления по запросу {}", text);
         return items;
