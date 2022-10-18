@@ -1,5 +1,6 @@
 package ru.practicum.shareit.item;
 
+import org.springframework.stereotype.Component;
 import ru.practicum.shareit.booking.dto.BookingDto;
 import ru.practicum.shareit.comment.dto.CommentDto;
 import ru.practicum.shareit.item.dto.ItemDto;
@@ -9,10 +10,10 @@ import ru.practicum.shareit.item.model.Item;
 import java.util.ArrayList;
 import java.util.List;
 
+@Component
 public class ItemMapper {
 
     private ItemMapper() {
-        throw new IllegalStateException("Utility class");
     }
 
     public static ItemDto toItemDto(Item item) {
@@ -22,7 +23,7 @@ public class ItemMapper {
                 .description(item.getDescription())
                 .available(item.getAvailable())
                 .owner(item.getOwner())
-                .request(item.getRequest())
+                .requestId(item.getRequestId())
                 .build();
     }
 
@@ -33,7 +34,7 @@ public class ItemMapper {
                 .description(itemDto.getDescription())
                 .available(itemDto.getAvailable())
                 .owner(itemDto.getOwner())
-                .request(itemDto.getRequest())
+                .requestId(itemDto.getRequestId())
                 .build();
     }
 
@@ -41,6 +42,14 @@ public class ItemMapper {
         List<ItemDto> result = new ArrayList<>();
         for (Item item : items) {
             result.add(ItemMapper.toItemDto(item));
+        }
+        return result;
+    }
+
+    public static List<Item> toItemList(Iterable<ItemDto> items) {
+        List<Item> result = new ArrayList<>();
+        for (ItemDto item : items) {
+            result.add(ItemMapper.toItem(item));
         }
         return result;
     }

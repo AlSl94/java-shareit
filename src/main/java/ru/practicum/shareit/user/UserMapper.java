@@ -1,15 +1,16 @@
 package ru.practicum.shareit.user;
 
+import org.springframework.stereotype.Component;
 import ru.practicum.shareit.user.dto.UserDto;
 import ru.practicum.shareit.user.model.User;
 
 import java.util.ArrayList;
 import java.util.List;
 
+@Component
 public class UserMapper {
 
     private UserMapper() {
-        throw new IllegalStateException("Utility class");
     }
 
     public static UserDto toUserDto(User user) {

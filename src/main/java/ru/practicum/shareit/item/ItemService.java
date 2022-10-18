@@ -1,6 +1,7 @@
 package ru.practicum.shareit.item;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ru.practicum.shareit.booking.BookingMapper;
@@ -18,10 +19,12 @@ import ru.practicum.shareit.item.dto.ItemDto;
 import ru.practicum.shareit.item.dto.ItemInfoDto;
 import ru.practicum.shareit.item.model.Item;
 import ru.practicum.shareit.user.UserService;
+import ru.practicum.shareit.utility.FromSizeRequest;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -84,23 +87,22 @@ public class ItemService {
         return ItemMapper.toItemInfoDto(item, nextBookingDto, lastBookingDto, dtos);
     }
 
-    public List<ItemInfoDto> getUserItems(Long userId) {
+    public List<ItemInfoDto> getUserItems(Long userId, int from, int size) {
 
-        List<Item> items = itemDao.findItemsByOwner(userId);
-        List<ItemInfoDto> itemDtos = new ArrayList<>();
+        Pageable pageable = FromSizeRequest.of(from, size);
 
-        for (Item item : items) {
-            itemDtos.add(getItem(userId, item.getId()));
-        }
-
-        return itemDtos;
+        return itemDao.findItemsByOwner(userId, pageable).stream()
+                .map(item -> getItem(userId, item.getId()))
+                .collect(Collectors.toList());
     }
 
-    public List<ItemDto> search(String text) {
+    public List<ItemDto> search(String text, int from, int size) {
+
         if (text.isBlank() || text.isEmpty()) {
             return new ArrayList<>();
         }
-        return ItemMapper.toDtoList(itemDao.findItemsByText(text));
+        Pageable pageable = FromSizeRequest.of(from, size);
+        return ItemMapper.toDtoList(itemDao.findItemsByText(text, pageable));
     }
 
     public ItemDto getSimpleItem(Long itemId) {

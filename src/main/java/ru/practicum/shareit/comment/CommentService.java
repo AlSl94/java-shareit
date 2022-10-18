@@ -38,6 +38,7 @@ public class CommentService {
             throw new ValidationException("Нельзя оставить пустой комментарий");
         }
 
+
         List<Booking> bookings = bookingDao
                 .findBookingsByBookerIdAndItemIdAndEndIsBefore(userId, itemId, LocalDateTime.now());
 

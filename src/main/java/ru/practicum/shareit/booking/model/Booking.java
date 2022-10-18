@@ -4,8 +4,6 @@ import lombok.*;
 import ru.practicum.shareit.booking.BookingStatus;
 
 import javax.persistence.*;
-import javax.validation.constraints.Future;
-import javax.validation.constraints.FutureOrPresent;
 import java.time.LocalDateTime;
 
 @Entity
@@ -20,10 +18,8 @@ public class Booking {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    @FutureOrPresent
     @Column(name = "start_date")
     private LocalDateTime start;
-    @Future
     @Column(name = "end_date")
     private LocalDateTime end;
     @Enumerated(EnumType.STRING)
