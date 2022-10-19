@@ -3,6 +3,7 @@ package ru.practicum.shareit.request;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
+import org.springframework.stereotype.Controller;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import ru.practicum.shareit.request.dto.ItemRequestDto;
@@ -12,7 +13,7 @@ import javax.validation.constraints.PositiveOrZero;
 
 @Slf4j
 @Validated
-@RestController
+@Controller
 @RequestMapping(path = "/requests")
 @RequiredArgsConstructor
 public class ItemRequestController {
@@ -21,7 +22,7 @@ public class ItemRequestController {
 
     @PostMapping
     public ResponseEntity<Object> createItemRequest(@RequestHeader("X-Sharer-User-Id") Long userId,
-                                         @RequestBody ItemRequestDto reqDto) {
+                                                    @RequestBody ItemRequestDto reqDto) {
         log.info("User {} made request {}", userId, reqDto);
         return requestClient.createItemRequest(userId, reqDto);
     }
@@ -41,8 +42,8 @@ public class ItemRequestController {
 
     @GetMapping(value = "/all")
     public ResponseEntity<Object> getAllItemRequests(@RequestHeader("X-Sharer-User-Id") Long userId,
-                                                  @PositiveOrZero @RequestParam(defaultValue = "0") int from,
-                                                  @Positive @RequestParam(defaultValue = "10") int size) {
+                                                     @PositiveOrZero @RequestParam(defaultValue = "0") int from,
+                                                     @Positive @RequestParam(defaultValue = "10") int size) {
         log.info("User {}, got all requests", userId);
         return requestClient.getAllItemRequests(userId, from, size);
     }

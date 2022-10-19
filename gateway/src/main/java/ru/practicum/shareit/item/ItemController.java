@@ -6,6 +6,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
+import ru.practicum.shareit.comment.CommentClient;
 import ru.practicum.shareit.comment.dto.CommentDto;
 import ru.practicum.shareit.item.dto.ItemDto;
 
@@ -20,6 +21,7 @@ import javax.validation.constraints.PositiveOrZero;
 public class ItemController {
 
     private final ItemClient itemClient;
+    private final CommentClient commentClient;
 
     @PostMapping
     public ResponseEntity<Object> createItem(@RequestHeader("X-Sharer-User-Id") Long userId,
@@ -64,6 +66,6 @@ public class ItemController {
                                               @PathVariable Long itemId,
                                               @RequestBody CommentDto commentDto) {
         log.info("User {} left comment {}", userId, commentDto);
-        return itemClient.postComment(userId, itemId, commentDto);
+        return commentClient.postComment(userId, itemId, commentDto);
     }
 }

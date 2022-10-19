@@ -5,13 +5,13 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.web.client.RestTemplateBuilder;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.client.HttpComponentsClientHttpRequestFactory;
+import org.springframework.stereotype.Service;
 import org.springframework.web.util.DefaultUriBuilderFactory;
 import ru.practicum.shareit.client.BaseClient;
-import ru.practicum.shareit.comment.dto.CommentDto;
 import ru.practicum.shareit.item.dto.ItemDto;
 
+@Service
 public class ItemClient extends BaseClient {
-
     private static final String API_PREFIX = "/items";
 
     @Autowired
@@ -47,14 +47,9 @@ public class ItemClient extends BaseClient {
         return get(query);
     }
 
-    public ResponseEntity<Object> postComment(Long userId, Long itemId, CommentDto commentDto) {
-        return post("/" + itemId + "/comment" + userId, commentDto);
-    }
-
     private String sizeNullValidation(String query, Integer size) {
         if (size != null) {
             return query + ("&size=" + size);
-        }
-        else return query;
+        } else return query;
     }
 }
