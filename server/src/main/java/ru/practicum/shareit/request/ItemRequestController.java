@@ -42,9 +42,9 @@ public class ItemRequestController {
     }
 
     @GetMapping(value = "/all")
-    public List<ItemRequestDtoWithItems> getItemRequests(@RequestHeader("X-Sharer-User-Id") Long userId,
-                                                         @RequestParam(defaultValue = "0") int from,
-                                                         @RequestParam(defaultValue = "10") int size) {
+    public List<ItemRequestDtoWithItems> getAllItemRequests(@RequestHeader("X-Sharer-User-Id") Long userId,
+                                                            @RequestParam(defaultValue = "0") int from,
+                                                            @RequestParam(defaultValue = "10") int size) {
         List<ItemRequestDtoWithItems> dtos = requestService.getAllItemRequests(userId, from, size);
         log.info("Получен список запросов созданных другими пользователями");
         return dtos;

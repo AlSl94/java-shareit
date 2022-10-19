@@ -6,39 +6,38 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
-import ru.practicum.shareit.booking.dto.BookItemRequestDto;
-import ru.practicum.shareit.booking.dto.BookingState;
+import ru.practicum.shareit.booking.dto.BookingDto;
+import ru.practicum.shareit.booking.dto.BookingStatus;
+import ru.practicum.shareit.booking.dto.FullBookingDto;
 
 import javax.validation.Valid;
 import javax.validation.constraints.Positive;
 import javax.validation.constraints.PositiveOrZero;
+import java.util.List;
 
-@Controller
-@RequestMapping(path = "/bookings")
-@RequiredArgsConstructor
 @Slf4j
+@Controller
 @Validated
+@RequiredArgsConstructor
+@RequestMapping(path = "/bookings")
+
 public class BookingController {
     private final BookingClient bookingClient;
 
-    @GetMapping
-    public ResponseEntity<Object> getBookings(
-            @RequestHeader("X-Sharer-User-Id") long userId,
-            @RequestParam(name = "state", defaultValue = "all") String stateParam,
-            @PositiveOrZero @RequestParam(name = "from", defaultValue = "0") Integer from,
-            @Positive @RequestParam(name = "size", defaultValue = "10") Integer size) {
-        BookingState state = BookingState.from(stateParam)
-                .orElseThrow(() -> new IllegalArgumentException("Unknown state: " + stateParam));
-        log.info("Get booking with state {}, userId={}, from={}, size={}", stateParam, userId, from, size);
-        return bookingClient.getBookings(userId, state, from, size);
-    }
-
     @PostMapping
-    public ResponseEntity<Object> bookItem(
+    public ResponseEntity<Object> createBooking(
             @RequestHeader("X-Sharer-User-Id") long userId,
-            @RequestBody @Valid BookItemRequestDto requestDto) {
+            @RequestBody @Valid BookingDto requestDto) {
         log.info("Creating booking {}, userId={}", requestDto, userId);
         return bookingClient.bookItem(userId, requestDto);
+    }
+
+    @PatchMapping(value = "/{bookingId}")
+    public ResponseEntity<Object> updateStatus(@RequestHeader("X-Sharer-User-Id") Long userId,
+                                               @PathVariable Long bookingId,
+                                               @RequestParam Boolean approved) {
+        log.info("Updated booking={} by user={}", bookingId, userId);
+        return bookingClient.updateBooking(bookingId, userId, approved);
     }
 
     @GetMapping("/{bookingId}")
@@ -47,5 +46,29 @@ public class BookingController {
             @PathVariable Long bookingId) {
         log.info("Get booking {}, userId={}", bookingId, userId);
         return bookingClient.getBooking(userId, bookingId);
+    }
+
+    @GetMapping
+    public ResponseEntity<Object> bookingsByBooker(
+            @RequestHeader("X-Sharer-User-Id") long userId,
+            @RequestParam(defaultValue = "ALL") String state,
+            @PositiveOrZero @RequestParam(defaultValue = "0") Integer from,
+            @Positive @RequestParam(defaultValue = "10") Integer size) {
+        BookingStatus status = BookingStatus.from(state)
+                .orElseThrow(() -> new IllegalArgumentException("Unknown status: " + state));
+        log.info("Get booking with status {}, userId={}, from={}, size={}", state, userId, from, size);
+        return bookingClient.bookingsByBooker(userId, status, from, size);
+    }
+
+    @GetMapping(value = "/owner")
+    public ResponseEntity<Object> bookingsByOwner(
+            @RequestHeader("X-Sharer-User-Id") long userId,
+            @RequestParam(defaultValue = "ALL") String state,
+            @PositiveOrZero @RequestParam(defaultValue = "0") Integer from,
+            @Positive @RequestParam(defaultValue = "10") Integer size) {
+        BookingStatus status = BookingStatus.from(state)
+                .orElseThrow(() -> new IllegalArgumentException("Unknown status: " + state));
+        log.info("Get booking by owner with status {}, userId={}, from={}, size={}", state, userId, from, size);
+        return bookingClient.bookingsByOwner(userId, status, from, size);
     }
 }

@@ -49,7 +49,6 @@ public class BookingController {
             @RequestParam(defaultValue = "ALL") String state,
             @RequestParam(defaultValue = "0") int from,
             @RequestParam(defaultValue = "10") int size) {
-
         List<FullBookingDto> bookings = bookingService.bookingsByBooker(userId, state, from, size);
         log.info("Получен список всех бронирований текущего пользователя");
         return bookings;
