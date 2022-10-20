@@ -1,4 +1,3 @@
-FROM amazoncorretto:11-al2-jdk
-ENV TZ=Europe/Moscow
+FROM amazoncorretto:11-alpine-jdk
 COPY target/*.jar shareit-gateway.jar
 ENTRYPOINT ["java","-jar","/shareit-gateway.jar"]
