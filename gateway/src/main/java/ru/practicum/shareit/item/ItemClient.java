@@ -12,6 +12,7 @@ import ru.practicum.shareit.item.dto.ItemDto;
 
 @Service
 public class ItemClient extends BaseClient {
+
     private static final String API_PREFIX = "/items";
 
     @Autowired
@@ -28,11 +29,11 @@ public class ItemClient extends BaseClient {
     }
 
     public ResponseEntity<Object> updateItem(Long userId, Long itemId, ItemDto itemDto) {
-        return patch("/" + userId, itemId, itemDto);
+        return patch("/" + itemId, userId, itemDto);
     }
 
     public ResponseEntity<Object> getItem(Long userId, Long itemId) {
-        return get("/" + userId, itemId);
+        return get("/" + itemId, userId);
     }
 
     public ResponseEntity<Object> getUserItems(Long userId, Integer from, Integer size) {

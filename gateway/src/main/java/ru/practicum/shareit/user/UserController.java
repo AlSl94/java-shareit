@@ -7,6 +7,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import ru.practicum.shareit.user.dto.UserDto;
+import ru.practicum.shareit.utility.Create;
 
 @Slf4j
 @Controller
@@ -18,7 +19,7 @@ public class UserController {
     private final UserClient userClient;
 
     @PostMapping
-    public ResponseEntity<Object> createUser(@RequestBody UserDto userDto) {
+    public ResponseEntity<Object> createUser(@Validated({Create.class}) @RequestBody UserDto userDto) {
         log.info("User created=id{}", userDto);
         return userClient.createUser(userDto);
     }

@@ -229,7 +229,7 @@ class ItemServiceTest {
                 .thenReturn(Optional.of(user()));
         when(commentDao.save(any(Comment.class)))
                 .thenReturn(comment());
-        when(bookingDao.findBookingsByBookerIdAndItemIdAndEndIsBefore(anyLong(), anyLong(), any()))
+        when(bookingDao.findCompletedBookings(anyLong(), anyLong(), any(BookingStatus.class)))
                 .thenReturn(Collections.singletonList(booking()));
         CommentDto comment = commentService.postComment(2L, 1L, commentDto);
         assertNotNull(comment);

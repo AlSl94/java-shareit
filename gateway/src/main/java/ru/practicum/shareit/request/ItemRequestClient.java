@@ -29,11 +29,11 @@ public class ItemRequestClient extends BaseClient {
     }
 
     public ResponseEntity<Object> getItemRequestById(Long userId, Long reqId) {
-        return get("/" + userId, reqId);
+        return get("/" + reqId, userId);
     }
 
     public ResponseEntity<Object> getUserItemRequests(Long userId) {
-        return get("" + userId);
+        return get("", userId);
     }
 
     public ResponseEntity<Object> getAllItemRequests(Long userId, Integer from, Integer size) {

@@ -23,7 +23,7 @@ public class BookingController {
 
     @PostMapping
     public ResponseEntity<Object> createBooking(
-            @RequestHeader("X-Sharer-User-Id") long userId,
+            @RequestHeader("X-Sharer-User-Id") Long userId,
             @RequestBody @Valid BookingDto requestDto) {
         log.info("Creating booking {}, userId={}", requestDto, userId);
         return bookingClient.bookItem(userId, requestDto);
@@ -34,12 +34,12 @@ public class BookingController {
                                                @PathVariable Long bookingId,
                                                @RequestParam Boolean approved) {
         log.info("Updated booking={} by user={}", bookingId, userId);
-        return bookingClient.updateBooking(bookingId, userId, approved);
+        return bookingClient.updateBooking(userId, bookingId, approved);
     }
 
     @GetMapping("/{bookingId}")
     public ResponseEntity<Object> getBooking(
-            @RequestHeader("X-Sharer-User-Id") long userId,
+            @RequestHeader("X-Sharer-User-Id") Long userId,
             @PathVariable Long bookingId) {
         log.info("Get booking {}, userId={}", bookingId, userId);
         return bookingClient.getBooking(userId, bookingId);
@@ -47,25 +47,25 @@ public class BookingController {
 
     @GetMapping
     public ResponseEntity<Object> bookingsByBooker(
-            @RequestHeader("X-Sharer-User-Id") long userId,
+            @RequestHeader("X-Sharer-User-Id") Long userId,
             @RequestParam(defaultValue = "ALL") String state,
-            @PositiveOrZero @RequestParam(defaultValue = "0") Integer from,
-            @Positive @RequestParam(defaultValue = "10") Integer size) {
+            @PositiveOrZero @RequestParam(defaultValue = "0", required = false) Integer from,
+            @Positive @RequestParam(defaultValue = "10", required = false) Integer size) {
         BookingStatus status = BookingStatus.from(state)
-                .orElseThrow(() -> new IllegalArgumentException("Unknown status: " + state));
-        log.info("Get booking with status {}, userId={}, from={}, size={}", state, userId, from, size);
+                .orElseThrow(() -> new IllegalArgumentException("Unknown state: " + state));
+        log.info("Get booking with status {}, userId={}, from={}, size={}", status, userId, from, size);
         return bookingClient.bookingsByBooker(userId, status, from, size);
     }
 
     @GetMapping(value = "/owner")
     public ResponseEntity<Object> bookingsByOwner(
-            @RequestHeader("X-Sharer-User-Id") long userId,
+            @RequestHeader("X-Sharer-User-Id") Long userId,
             @RequestParam(defaultValue = "ALL") String state,
             @PositiveOrZero @RequestParam(defaultValue = "0") Integer from,
             @Positive @RequestParam(defaultValue = "10") Integer size) {
         BookingStatus status = BookingStatus.from(state)
-                .orElseThrow(() -> new IllegalArgumentException("Unknown status: " + state));
-        log.info("Get booking by owner with status {}, userId={}, from={}, size={}", state, userId, from, size);
+                .orElseThrow(() -> new IllegalArgumentException("Unknown state: " + state));
+        log.info("Get booking by owner with status {}, userId={}, from={}, size={}", status, userId, from, size);
         return bookingClient.bookingsByOwner(userId, status, from, size);
     }
 }

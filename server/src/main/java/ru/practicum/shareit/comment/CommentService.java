@@ -19,7 +19,6 @@ import ru.practicum.shareit.user.model.User;
 
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.Objects;
 
 @Service
 @RequiredArgsConstructor
@@ -38,11 +37,8 @@ public class CommentService {
             throw new ValidationException("Нельзя оставить пустой комментарий");
         }
 
-
-        List<Booking> bookings = bookingDao
-                .findBookingsByBookerIdAndItemIdAndEndIsBefore(userId, itemId, LocalDateTime.now());
-
-        if (bookings.stream().noneMatch(b -> Objects.equals(b.getStatus(), BookingStatus.APPROVED))) {
+        List<Booking> bookings = bookingDao.findCompletedBookings(userId, itemId, BookingStatus.APPROVED);
+        if (bookings.isEmpty()) {
             throw new ValidationException("Нельзя оставить комментарий, без бронирования");
         }
 

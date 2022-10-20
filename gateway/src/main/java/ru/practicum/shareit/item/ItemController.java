@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.*;
 import ru.practicum.shareit.comment.CommentClient;
 import ru.practicum.shareit.comment.dto.CommentDto;
 import ru.practicum.shareit.item.dto.ItemDto;
+import ru.practicum.shareit.utility.Create;
 
 import javax.validation.constraints.Positive;
 import javax.validation.constraints.PositiveOrZero;
@@ -25,7 +26,7 @@ public class ItemController {
 
     @PostMapping
     public ResponseEntity<Object> createItem(@RequestHeader("X-Sharer-User-Id") Long userId,
-                                             @RequestBody ItemDto itemDto) {
+                                             @Validated({Create.class}) @RequestBody ItemDto itemDto) {
         log.info("User {}, created item {}", userId, itemDto.getName());
         return itemClient.createItem(userId, itemDto);
     }
@@ -61,6 +62,7 @@ public class ItemController {
         return itemClient.searchItem(text, from, size);
     }
 
+    @ResponseBody
     @PostMapping(value = "/{itemId}/comment")
     public ResponseEntity<Object> postComment(@RequestHeader("X-Sharer-User-Id") Long userId,
                                               @PathVariable Long itemId,
